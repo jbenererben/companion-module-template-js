@@ -5,8 +5,8 @@
 	"description": "Pixelflow'da seçili screen’in PVW layer’larını dinamik olarak gösterip seçmek için Companion modülü.",
 	"version": "1.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/senin-github-adin/senin-repon.git",
-	"bugs": "https://github.com/senin-github-adin/senin-repon/issues",
+	"repository": "git+https://github.com/jbenererben/companion-module-template-js/tree/main/companion",
+	"bugs": "https://github.com/jbenererben/companion-module-template-js/tree/main/companion",
 	"maintainers": [
 		{
 			"name": "Jeyan Bener Erben",
