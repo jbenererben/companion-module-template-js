@@ -1,6 +1,36 @@
+# Dependencies
 node_modules/
+yarn.lock
 package-lock.json
-/pkg
-/*.tgz
-DEBUG-*
-/.yarn
+
+# Build outputs
+dist/
+build/
+pkg/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Temporary folders
+tmp/
+temp/
