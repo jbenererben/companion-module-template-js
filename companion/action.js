@@ -18,20 +18,20 @@ module.exports = function (self) {
         self.selectedScreenId = event.options.screen_id
         self.log('info', `Aktif Screen ID: ${self.selectedScreenId}`)
         // Hemen ardından layer isimlerini güncelle
-        // (Kullanıcı isterse presetle ayrı tuşa da atayabilir!)
         self.performAction('get_pvw_layers', {})
       },
     },
 
     // 1. PVW Layerları Çek ve isimleri variable'a yaz
     get_pvw_layers: {
-      name: 'Seçili Screen’in PVW Layerlarını ve İsimlerini Çek',
+      name: 'Seçili Screen\'in PVW Layerlarını ve İsimlerini Çek',
       options: [],
       callback: async () => {
-        const ip = self.config.host || self.config.ip || '127.0.0.1'
+        const ip = self.config.host || '127.0.0.1'
+        const port = self.config.port || '19998'
         const screenId = self.selectedScreenId || 1
 
-        const url = `http://${ip}:19998/unico/v1/layers/list-detail`
+        const url = `http://${ip}:${port}/unico/v1/layers/list-detail`
 
         try {
           const res = await self.system.emit('http_get', url, {})
@@ -40,17 +40,21 @@ module.exports = function (self) {
               l.layerIdObj && l.layerIdObj.attachScreenId === screenId &&
               l.UMD && l.UMD.some(u => (u.name || '').toUpperCase().includes('PVW'))
             )
+            
+            // Layer isimlerini variable'lara yaz
             for (let i = 1; i <= 8; i++) {
               const lay = pvwLayers.find(l =>
                 (l.serial === i) || (l.general && l.general.serial === i)
               )
-              self.setVariable(`layer_name_${i}`, lay ? (lay.name || `L${i}`) : `L${i}`)
+              self.setVariableValue(`layer_name_${i}`, lay ? (lay.name || `L${i}`) : `L${i}`)
             }
+            
+            self.log('info', `${pvwLayers.length} PVW layer bulundu`)
           } else {
-            console.log('Veri bulunamadı')
+            self.log('warn', 'PVW layer verisi bulunamadı')
           }
         } catch (err) {
-          console.log('HTTP isteğinde hata:', err)
+          self.log('error', `HTTP isteğinde hata: ${err.message}`)
         }
       },
     },
@@ -65,13 +69,15 @@ module.exports = function (self) {
           label: 'Layer Serial (L1 için 1, L2 için 2, vb)',
           default: 1,
           min: 1,
+          max: 8,
         },
       ],
       callback: async (event) => {
-        const ip = self.config.host || self.config.ip || '127.0.0.1'
+        const ip = self.config.host || '127.0.0.1'
+        const port = self.config.port || '19998'
         const screenId = self.selectedScreenId || 1
         const serial = event.options.serial
-        const url = `http://${ip}:19998/unico/v1/layers/list-detail`
+        const url = `http://${ip}:${port}/unico/v1/layers/list-detail`
 
         try {
           const res = await self.system.emit('http_get', url, {})
@@ -80,30 +86,41 @@ module.exports = function (self) {
               l.layerIdObj && l.layerIdObj.attachScreenId === screenId &&
               l.UMD && l.UMD.some(u => (u.name || '').toUpperCase().includes('PVW'))
             )
+            
             const targetLayer = pvwLayers.find(
               l => l.serial === serial ||
               (l.general && l.general.serial === serial)
             )
-            self.setVariable(`layer_name_${serial}`, targetLayer ? (targetLayer.name || `L${serial}`) : `L${serial}`)
+            
+            // Layer adını variable'a yaz
+            self.setVariableValue(`layer_name_${serial}`, targetLayer ? (targetLayer.name || `L${serial}`) : `L${serial}`)
 
             if (targetLayer) {
-              // Toggle mantığı
+              const layerId = targetLayer.layerId || targetLayer.id
+              
+              // Toggle mantığı - aynı layer'a tekrar basıldıysa deselect et
               if (
                 self.selectedLayer &&
                 self.selectedLayer.screenId == screenId &&
-                self.selectedLayer.layerId == (targetLayer.layerId || targetLayer.id)
+                self.selectedLayer.layerId == layerId
               ) {
                 self.selectedLayer = null // Deselect
+                self.log('info', `Layer L${serial} seçimi kaldırıldı`)
               } else {
-                self.selectedLayer = { screenId, layerId: targetLayer.layerId || targetLayer.id }
+                self.selectedLayer = { screenId, layerId }
+                self.log('info', `Layer L${serial} seçildi (ID: ${layerId})`)
               }
+              
+              // Feedback'leri güncelle
               self.checkFeedbacks('layer_selected')
+            } else {
+              self.log('warn', `L${serial} seriali layer bulunamadı`)
             }
           } else {
-            console.log('Veri bulunamadı')
+            self.log('warn', 'Layer verisi bulunamadı')
           }
         } catch (err) {
-          console.log('HTTP isteğinde hata:', err)
+          self.log('error', `HTTP isteğinde hata: ${err.message}`)
         }
       },
     }
