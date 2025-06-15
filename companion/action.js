@@ -1,8 +1,8 @@
 module.exports = function (self) {
   self.setActionDefinitions({
-    // 1. Seçili screen’in PVW layer’larını konsola yazdır
+    // 1. PVW Layerları Çek ve isimleri variable'a yaz
     get_pvw_layers: {
-      name: 'Seçili Screen’in PVW Layerlarını Çek',
+      name: 'Seçili Screen’in PVW Layerlarını ve İsimlerini Çek',
       options: [
         {
           id: 'screen_id',
@@ -24,7 +24,15 @@ module.exports = function (self) {
               l.layerIdObj && l.layerIdObj.attachScreenId === screenId &&
               l.UMD && l.UMD.some(u => (u.name || '').toUpperCase().includes('PVW'))
             )
-            console.log('Seçilen Screen’in PVW Layerları:', pvwLayers)
+
+            // Adımlı: Her serial için variable'a isim yaz!
+            for (const layer of pvwLayers) {
+              const serial = layer.serial || (layer.general && layer.general.serial)
+              if (serial) {
+                self.setVariable(`layer_name_${serial}`, layer.name || `L${serial}`)
+              }
+            }
+            console.log('PVW Layerlar ve İsimleri Güncellendi:', pvwLayers)
           } else {
             console.log('Veri bulunamadı')
           }
@@ -34,7 +42,7 @@ module.exports = function (self) {
       },
     },
 
-    // 2. Serial ile PVW Layer bulucu (ör. L1/L2/L3…)
+    // 2. Serial ile PVW Layer bulucu + toggle seçme
     get_pvw_layer_by_serial: {
       name: 'PVW Layerı Serial ile Seç',
       options: [
