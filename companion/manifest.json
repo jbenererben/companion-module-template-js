@@ -1,12 +1,12 @@
 {
-	"id": "P20_LayerSelect",
+	"id": "p20-layerselect",
 	"name": "P20 PVW Layer Select",
-	"shortname": "P20LayerSelect",
-	"description": "Pixelflow'da seçili screen’in PVW layer’larını dinamik olarak gösterip seçmek için Companion modülü.",
+	"shortname": "p20layerselect",
+	"description": "Pixelflow'da seçili screen’in PVW layer’larını dinamik olarak gösterip seçmek için Companion modülü. (Unofficial, experimental, personal use only)",
 	"version": "1.0.0",
 	"license": "MIT",
-	"repository": "git+https://github.com/jbenererben/companion-module-template-js/tree/main/companion",
-	"bugs": "https://github.com/jbenererben/companion-module-template-js/tree/main/companion",
+	"repository": "git+https://github.com/jbenererben/companion-module-template-js.git",
+	"bugs": "https://github.com/jbenererben/companion-module-template-js/issues",
 	"maintainers": [
 		{
 			"name": "Jeyan Bener Erben",
