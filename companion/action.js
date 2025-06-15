@@ -72,8 +72,18 @@ module.exports = function (self) {
               (l.general && l.general.serial === serial)
             )
             if (targetLayer) {
+              // Toggle mantığı: Eğer seçiliyse kaldır, değilse seç
+              if (
+                self.selectedLayer &&
+                self.selectedLayer.screenId == screenId &&
+                self.selectedLayer.layerId == (targetLayer.layerId || targetLayer.id)
+              ) {
+                self.selectedLayer = null // Deselect
+              } else {
+                self.selectedLayer = { screenId, layerId: targetLayer.layerId || targetLayer.id }
+              }
+              self.checkFeedbacks('layer_selected')
               console.log(`Screen ${screenId} PVW'deki L${serial}:`, targetLayer)
-              // Burada layer ile yapılacak başka işleme ileride kod eklenebilir
             } else {
               console.log(`Screen ${screenId} PVW'de serial ${serial} bulunamadı.`)
             }
