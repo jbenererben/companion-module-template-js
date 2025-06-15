@@ -6,7 +6,7 @@ module.exports = function (self) {
 			label: `L${i + 1} Layer`,
 			bank: {
 				style: 'text',
-				text: `$(P20_LayerSelect:layer_name_${i + 1})`, // Dinamik layer adı (modül adını değiştirmeyi unutma!)
+				text: `$(p20-layerselect:layer_name_${i + 1})`, // Modül ID'sini güncelledim
 				size: '18',
 				color: 16777215,
 				bgcolor: 0,
@@ -23,13 +23,14 @@ module.exports = function (self) {
 				{
 					feedbackId: 'layer_selected',
 					options: {
-						serial: i + 1
+						screen_id: 1, // Default screen ID
+						layer_id: '', // Bu action çalıştığında dinamik olarak set edilecek
 					},
 				},
 			],
 		})),
 
-		// ---- YENİ: PVW Layerları Yenile Tuşu ----
+		// PVW Layerları Yenile Tuşu
 		{
 			category: 'PVW Layer Seçiciler',
 			label: 'PVW Layerları Yenile',
@@ -43,9 +44,7 @@ module.exports = function (self) {
 			actions: [
 				{
 					action: 'get_pvw_layers',
-					options: {
-						// Ekran seçimini modül içinden çekecek
-					},
+					options: {},
 				},
 			],
 			feedbacks: [],
