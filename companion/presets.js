@@ -5,7 +5,7 @@ module.exports = function (self) {
 			label: `L${i + 1} Layer`,
 			bank: {
 				style: 'text',
-				text: `L${i + 1}`, // İstersen layer ismini dinamik de çekebiliriz!
+				text: `$(layer_name_${i + 1})`, // Dinamik layer adı!
 				size: '18',
 				color: 16777215,
 				bgcolor: 0,
@@ -14,7 +14,7 @@ module.exports = function (self) {
 				{
 					action: 'get_pvw_layer_by_serial',
 					options: {
-						serial: i + 1, // Sadece serial!
+						serial: i + 1,
 					},
 				},
 			],
@@ -22,7 +22,9 @@ module.exports = function (self) {
 				{
 					feedbackId: 'layer_selected',
 					options: {
-						serial: i + 1, // Feedback de sadece serial ile kontrol edecek
+						// Son seçilen screen ve layerId ile kontrol edilecek,
+						// Ancak burada sadece serial veriyoruz, action'da variable güncelleniyor olacak
+						serial: i + 1
 					},
 				},
 			],
