@@ -1,26 +1,26 @@
 {
-	"id": "p20-layerselect",
-	"name": "P20 PVW Layer Select",
-	"shortname": "p20layerselect",
-	"description": "Pixelflow'da seçili screen’in PVW layer’larını dinamik olarak gösterip seçmek için Companion modülü. (Unofficial, experimental, personal use only)",
-	"version": "1.0.0",
-	"license": "MIT",
-	"repository": "git+https://github.com/jbenererben/companion-module-template-js.git",
-	"bugs": "https://github.com/jbenererben/companion-module-template-js/issues",
-	"maintainers": [
-		{
-			"name": "Jeyan Bener Erben",
-			"email": ""
-		}
-	],
-	"runtime": {
-		"type": "node22",
-		"api": "nodejs-ipc",
-		"apiVersion": "0.0.0",
-		"entrypoint": "./main.js"
-	},
-	"legacyIds": [],
-	"manufacturer": "Pixelflow",
-	"products": ["Pixelflow", "Pixelhue", "P20", "LED Processor"],
-	"keywords": ["pixelflow", "Pixelhue", "p20", "layer", "pvw", "companion"]
+  "id": "p20-layerselect",
+  "name": "P20 PVW Layer Select",
+  "shortname": "p20layerselect",
+  "description": "Pixelflow'da seçili screen’in PVW layer’larını dinamik olarak gösterip seçmek için Companion modülü. (Unofficial, experimental, personal use only)",
+  "version": "1.0.0",
+  "license": "MIT",
+  "repository": "git+https://github.com/jbenererben/companion-module-template-js.git",
+  "bugs": "https://github.com/jbenererben/companion-module-template-js/issues",
+  "maintainers": [
+    {
+      "name": "Jeyan Bener Erben",
+      "email": ""
+    }
+  ],
+  "runtime": {
+    "type": "node22",
+    "api": "nodejs-ipc",
+    "apiVersion": "0.0.0",
+    "entrypoint": "main.js"
+  },
+  "legacyIds": [],
+  "manufacturer": "Pixelflow",
+  "products": ["Pixelflow", "Pixelhue", "P20", "LED Processor"],
+  "keywords": ["pixelflow", "Pixelhue", "p20", "layer", "pvw", "companion"]
 }
