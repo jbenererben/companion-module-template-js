@@ -3,6 +3,7 @@ const UpgradeScripts = require('./upgrades')
 const UpdateActions = require('./actions')
 const UpdateFeedbacks = require('./feedbacks')
 const UpdateVariableDefinitions = require('./variables')
+const UpdatePresetDefinitions = require('./presets') // Presets eklendi
 
 class ModuleInstance extends InstanceBase {
 	constructor(internal) {
@@ -11,13 +12,19 @@ class ModuleInstance extends InstanceBase {
 
 	async init(config) {
 		this.config = config
+		
+		// Varsayılan değerleri başlat
+		this.selectedScreenId = 1
+		this.selectedLayer = null
 
 		this.updateStatus(InstanceStatus.Ok)
 
 		this.updateActions() // export actions
 		this.updateFeedbacks() // export feedbacks
 		this.updateVariableDefinitions() // export variable definitions
+		this.updatePresetDefinitions() // export presets
 	}
+	
 	// When module gets deleted
 	async destroy() {
 		this.log('debug', 'destroy')
@@ -36,6 +43,7 @@ class ModuleInstance extends InstanceBase {
 				label: 'Target IP',
 				width: 8,
 				regex: Regex.IP,
+				default: '192.168.1.100'
 			},
 			{
 				type: 'textinput',
@@ -43,6 +51,7 @@ class ModuleInstance extends InstanceBase {
 				label: 'Target Port',
 				width: 4,
 				regex: Regex.PORT,
+				default: '19998'
 			},
 		]
 	}
@@ -57,6 +66,18 @@ class ModuleInstance extends InstanceBase {
 
 	updateVariableDefinitions() {
 		UpdateVariableDefinitions(this)
+	}
+	
+	updatePresetDefinitions() {
+		UpdatePresetDefinitions(this)
+	}
+
+	// Helper method to perform actions programmatically
+	performAction(actionId, options) {
+		const actionDefinitions = this.getActionDefinitions()
+		if (actionDefinitions[actionId] && actionDefinitions[actionId].callback) {
+			actionDefinitions[actionId].callback({ options })
+		}
 	}
 }
 
