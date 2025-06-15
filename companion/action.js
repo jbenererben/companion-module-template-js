@@ -1,24 +1,35 @@
 module.exports = function (self) {
-  self.lastScreenId = 1 // Varsayılan ilk değer
+  self.selectedScreenId = 1 // Varsayılan ilk değer
 
   self.setActionDefinitions({
-    // 1. PVW Layerları Çek ve isimleri variable'a yaz
-    get_pvw_layers: {
-      name: 'Seçili Screen’in PVW Layerlarını ve İsimlerini Çek',
+    // 0. Aktif screen ID ayarlama (Başka modülden tetiklenecek)
+    set_active_screen: {
+      name: 'Aktif Screen ID Ayarla',
       options: [
         {
           id: 'screen_id',
           type: 'number',
-          label: 'Screen ID (Boş bırakılırsa son seçilen kullanılır)',
-          default: undefined,
+          label: 'Screen ID',
+          default: 1,
           min: 1,
-          optional: true,
         },
       ],
       callback: async (event) => {
+        self.selectedScreenId = event.options.screen_id
+        self.log('info', `Aktif Screen ID: ${self.selectedScreenId}`)
+        // Hemen ardından layer isimlerini güncelle
+        // (Kullanıcı isterse presetle ayrı tuşa da atayabilir!)
+        self.performAction('get_pvw_layers', {})
+      },
+    },
+
+    // 1. PVW Layerları Çek ve isimleri variable'a yaz
+    get_pvw_layers: {
+      name: 'Seçili Screen’in PVW Layerlarını ve İsimlerini Çek',
+      options: [],
+      callback: async () => {
         const ip = self.config.host || self.config.ip || '127.0.0.1'
-        const screenId = event.options.screen_id || self.lastScreenId || 1
-        self.lastScreenId = screenId // Kaydet
+        const screenId = self.selectedScreenId || 1
 
         const url = `http://${ip}:19998/unico/v1/layers/list-detail`
 
@@ -30,7 +41,6 @@ module.exports = function (self) {
               l.UMD && l.UMD.some(u => (u.name || '').toUpperCase().includes('PVW'))
             )
             for (let i = 1; i <= 8; i++) {
-              // Her seferinde tüm isimleri sıfırla, var olanı güncelle
               const lay = pvwLayers.find(l =>
                 (l.serial === i) || (l.general && l.general.serial === i)
               )
@@ -59,7 +69,7 @@ module.exports = function (self) {
       ],
       callback: async (event) => {
         const ip = self.config.host || self.config.ip || '127.0.0.1'
-        const screenId = self.lastScreenId || 1
+        const screenId = self.selectedScreenId || 1
         const serial = event.options.serial
         const url = `http://${ip}:19998/unico/v1/layers/list-detail`
 
@@ -74,7 +84,6 @@ module.exports = function (self) {
               l => l.serial === serial ||
               (l.general && l.general.serial === serial)
             )
-            // Her actionda variable'ı güncelle
             self.setVariable(`layer_name_${serial}`, targetLayer ? (targetLayer.name || `L${serial}`) : `L${serial}`)
 
             if (targetLayer) {
